@@ -14,6 +14,15 @@
         <apoc.version>4.0.0.0</apoc.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+         
+    <distributionManagement>
+      <repository>
+        <id>github</id>
+        <name>GitHub Apache Maven Packages</name>
+        <url>https://maven.pkg.github.com/pecollet/neo4j-impact-analysis</url>
+      </repository>
+    </distributionManagement>
+         
     <dependencies>
         <dependency>
             <groupId>org.neo4j</groupId>
