@@ -18,7 +18,7 @@ public class Impact  {
         WORKING(0), AT_RISK(1), DEGRADED(2), FAILED(3);
 
         private final int value;
-        private State(int value) {
+        State(int value) {
             this.value = value;
         }
         public int getStateValue() {
@@ -58,7 +58,7 @@ public class Impact  {
     public Log log;
 
     @Procedure(value = "neo4j.impact.compute")
-    @Description("neo4j.impact.compute(start <id>|Node|list, 'TYPE_OUT>|<TYPE_IN', maxLevel)\n"+
+    @Description("neo4j.impact.compute(start <id>|Node|list, 'TYPE_OUT>|<TYPE_IN', limits)\n"+
             "Computes impacts from the start node(s), following the given impact relationships, within the specified limits.\n"+
             "'start' : <id>|Node|list of Node|list of <id> \n"+
             "'relationshipFilter' : [<]RELATIONSHIP_TYPE1[>]|[<]RELATIONSHIP_TYPE2[>]|...\n"+
@@ -81,7 +81,7 @@ public class Impact  {
 
         //parse 'start' with startToNodes (from PathExplorer) to support Node, nodeId, list of Nodes, list of nodeIds
         List<Node> nodes = this.startToNodes(start);
-        HashMap<Node, State> nodesMap = new HashMap<Node, State>();
+        HashMap<Node, State> nodesMap = new HashMap<>();
         for (Node n : nodes) { nodesMap.put(n, State.FAILED); }
 
         //parse 'relationshipFilter' : create a PathExpander
@@ -118,8 +118,8 @@ public class Impact  {
     private static long[] parseLimits(String limitsString) throws QueryExecutionException {
         long timeout=-1, maxLevel=-1, resultLimit=-1;
         String[] limits = limitsString.trim().split(",");
-        for(int i=0; i< limits.length; i++) {
-            String trimmedValue=limits[i].trim();
+        for (String limit : limits) {
+            String trimmedValue = limit.trim();
             if (trimmedValue.matches("^[0-9]+s$")) {
                 timeout = Integer.parseInt(trimmedValue.replaceFirst("s", ""));
             } else if (trimmedValue.matches("^[0-9]+hops$")) {
@@ -127,11 +127,10 @@ public class Impact  {
             } else if (trimmedValue.matches("^[0-9]+results$")) {
                 resultLimit = Integer.parseInt(trimmedValue.replaceFirst("results", ""));
             } else {
-                throw new QueryExecutionException("parameter 'limit' expects one (or several, with a comma separating them) of the following formats : limit in seconds (ex : '10s'), hop limit (ex: '5hops'), or result limit (ex: '1000results'). Found '"+ limits[i]+"'", null, "Neo.ClientError.Statement.SyntaxError");
+                throw new QueryExecutionException("parameter 'limit' expects one (or several, with a comma separating them) of the following formats : limit in seconds (ex : '10s'), hop limit (ex: '5hops'), or result limit (ex: '1000results'). Found '" + limit + "'", null, "Neo.ClientError.Statement.SyntaxError");
             }
         }
-        long[] limitsArray = {maxLevel, timeout, resultLimit};
-        return limitsArray;
+        return new long[]{maxLevel, timeout, resultLimit};
     }
 
     //uses a copy of apoc RelationshipTypeAndDirections (could be replaced by apoc dependency)
