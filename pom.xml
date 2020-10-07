@@ -6,13 +6,13 @@
 
     <groupId>org.neo4j.procedure</groupId>
     <artifactId>impact</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 
     <properties>
-        <neo4j.version>4.0.1</neo4j.version>
-        <neo4j.driver.version>4.0.0</neo4j.driver.version>
-        <apoc.version>4.0.0.0</apoc.version>
+        <neo4j.version>4.1.3</neo4j.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!--suppress UnresolvedMavenProperty -->
+        <install.dir>${install_dir}</install.dir>
     </properties>
          
     <distributionManagement>
@@ -37,23 +37,11 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.neo4j.driver</groupId>
-            <artifactId>neo4j-java-driver</artifactId>
-            <version>${neo4j.driver.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.neo4j.community</groupId>
             <artifactId>it-test-support</artifactId>
             <version>${neo4j.version}</version>
             <scope>test</scope>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.neo4j.procedure</groupId>-->
-<!--            <artifactId>apoc</artifactId>-->
-<!--            <version>${apoc.version}</version>-->
-<!--&lt;!&ndash;            <scope>test</scope>&ndash;&gt;-->
-<!--        </dependency>-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -67,51 +55,11 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.neo4j</groupId>
-            <artifactId>neo4j-kernel</artifactId>
-            <version>${neo4j.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
             <version>3.13.2</version>
             <scope>test</scope>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>commons-io</groupId>-->
-<!--            <artifactId>commons-io</artifactId>-->
-<!--            <version>2.6</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.apache.commons</groupId>-->
-<!--            <artifactId>commons-configuration2</artifactId>-->
-<!--            <version>2.5</version>-->
-<!--            <scope>provided</scope>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.webjars.bower</groupId>-->
-<!--            <artifactId>github-com-polymer-polymer</artifactId>-->
-<!--            <version>2.0.0-rc.9</version>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
-        <dependency>
-            <groupId>com.lodborg</groupId>
-            <artifactId>interval-tree</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>2.10.2</version>
-            <scope>compile</scope>
-        </dependency>
-        <!--        <dependency>-->
-<!--            <groupId>org.roaringbitmap</groupId>-->
-<!--            <artifactId>RoaringBitmap</artifactId>-->
-<!--            <version>0.7.17</version>-->
-<!--            <scope>compile</scope>-->
-<!--        </dependency>-->
     </dependencies>
     <build>
         <plugins>
@@ -119,9 +67,6 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <!-- Neo4j Procedures require Java 8 -->
-<!--                    <source>1.8</source>-->
-<!--                    <target>1.8</target>-->
                     <release>11</release>
                 </configuration>
             </plugin>
@@ -150,6 +95,31 @@
                         <goals>
                             <goal>shade</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-resource-one</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+
+                        <configuration>
+                            <outputDirectory>${install.dir}/plugins</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>target</directory>
+                                    <includes>
+                                        <include>${project.artifactId}-*.jar</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

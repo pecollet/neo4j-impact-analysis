@@ -1,1 +1,5 @@
 /.idea/
+/procedures.iml
+*.class
+*.jar
+/target/
