@@ -5,6 +5,7 @@ import org.neo4j.graphdb.traversal.*;
 import org.neo4j.internal.helpers.collection.Pair;
 import org.neo4j.logging.Log;
 import org.neo4j.procedure.*;
+import apoc.path.PathExplorer;
 
 import java.util.*;
 import java.util.stream.Stream;
