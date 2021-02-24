@@ -6,7 +6,7 @@
 
     <groupId>org.neo4j.procedure</groupId>
     <artifactId>impact</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.3</version>
 
     <properties>
         <neo4j.version>4.2.2</neo4j.version>
