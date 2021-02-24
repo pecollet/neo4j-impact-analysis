@@ -34,4 +34,4 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ github.token }}
       with:
-        args: '*.jar'
+        args: '/github/workspace/target/impact-*.jar'
